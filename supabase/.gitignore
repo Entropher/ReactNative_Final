@@ -1,0 +1,5 @@
+# Files the Supabase CLI creates locally (linked project, caches, local secrets).
+.branches
+.temp
+.env
+.env.*

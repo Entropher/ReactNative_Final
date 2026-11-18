@@ -1,0 +1,37 @@
+import { Stack } from 'expo-router';
+import { useEffect } from 'react';
+import { Appearance } from 'react-native';
+
+import { usePreferences } from '@/hooks/use-gift-data';
+import { useTheme } from '@/hooks/use-theme';
+import { SurveyProvider } from '@/providers/survey-provider';
+
+export default function AppLayout() {
+  const theme = useTheme();
+  const { data: preferences } = usePreferences();
+
+  // Apply the Light / Dark / System choice from Settings to the whole app.
+  const themeChoice = preferences?.theme;
+  useEffect(() => {
+    Appearance.setColorScheme(themeChoice === 'light' || themeChoice === 'dark' ? themeChoice : 'unspecified');
+  }, [themeChoice]);
+  // Back to the phone's setting after signing out.
+  useEffect(() => () => Appearance.setColorScheme('unspecified'), []);
+
+  return (
+    <SurveyProvider>
+      <Stack
+        screenOptions={{
+          headerTintColor: theme.primary,
+          headerTitleStyle: { color: theme.text },
+          headerShadowVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
+        }}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false, title: 'Home' }} />
+        <Stack.Screen name="questionnaire" options={{ title: 'Find a Gift' }} />
+        <Stack.Screen name="more-details" options={{ title: 'More Details' }} />
+        <Stack.Screen name="results/[id]" options={{ title: 'Gift Ideas' }} />
+      </Stack>
+    </SurveyProvider>
+  );
+}

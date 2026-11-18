@@ -1,0 +1,14 @@
+# Supabase CLI settings for GiftMaster (used by `supabase link`, `db push`,
+# `functions deploy`, and for running the backend locally).
+# The hosted project's own settings (sign-in providers, redirect URLs, email
+# confirmation) are set in the Supabase dashboard. See SETUP.md.
+project_id = "giftmaster"
+
+[auth]
+site_url = "https://giftmaster.pro"
+# Where email confirmation links may send people back to: the installed app
+# (giftmaster://) and Expo Go during development (exp://).
+additional_redirect_urls = ["giftmaster://**", "exp://**"]
+
+[auth.email]
+enable_confirmations = true

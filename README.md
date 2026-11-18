@@ -1,56 +1,38 @@
-# Welcome to your Expo app 👋
+# GiftMaster (iOS and Android)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+The mobile version of [giftmaster.pro](https://giftmaster.pro): answer a short
+survey about someone and get 10 personalized gift ideas from Claude, with links
+to Amazon, Etsy or Uncommon Goods.
 
-## Get started
+**First time here? Follow [SETUP.md](SETUP.md).**
 
-1. Install dependencies
+## Features
 
-   ```bash
-   npm install
-   ```
+- 4-step gift survey, plus an optional "More Details" page
+- 10 AI gift ideas per search, with price range, category, shop link and product photo
+- "More Like This" for 5 similar ideas, saving favorites, sharing
+- Search history with "Use again"
+- Email/password (with email confirmation), Sign in with Apple, and Google sign-in
+- 3 free searches per month per account
+- Light/dark theme and a default budget in Settings; in-app account deletion
 
-2. Start the app
+## How it's built
 
-   ```bash
-   npx expo start
-   ```
+| Part | Technology | Where |
+| --- | --- | --- |
+| App | Expo SDK 58, Expo Router, TypeScript, React Query | `src/` |
+| Screens | One file per screen | `src/app/` (`(auth)` = signed out, `(app)` = signed in) |
+| Database and sign-in | Supabase (Postgres with row level security) | `supabase/migrations/` |
+| AI and server logic | Supabase Edge Functions (Deno), Claude Haiku 5.5 | `supabase/functions/` |
 
-In the output, you'll find options to open the app in a
+The Claude API key lives only in Supabase's server secrets. The app calls the
+Edge Functions, and those call Claude.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Everyday commands
 
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```powershell
+npx expo start          # run the app (scan the QR code with Expo Go or your dev build)
+npx tsc --noEmit        # type-check the app
+npx expo lint           # lint
+npx supabase functions deploy --use-api   # deploy server-function changes
 ```
-
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
-
-### Other setup steps
-
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
