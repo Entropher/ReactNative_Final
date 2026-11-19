@@ -8,8 +8,15 @@ import { supabase } from '@/lib/supabase';
 /** Returned when the user closed a sign-in sheet; not an error. */
 export const CANCELLED = 'cancelled' as const;
 
-// Email confirmation links open the app here; the session arrives in the URL.
+// Email links open the app on these screens; the session arrives in the URL.
 const emailRedirectTo = Linking.createURL('/welcome');
+const passwordResetRedirectTo = Linking.createURL('/set-new-password');
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export function isValidEmail(email: string): boolean {
+  return EMAIL_PATTERN.test(email.trim());
+}
 
 // ---- Email + password ------------------------------------------------------
 
@@ -48,27 +55,46 @@ export async function resendConfirmationEmail(email: string): Promise<void> {
   if (error) throw error;
 }
 
+/** Emails a link that opens the app on the "Choose a new password" screen. */
+export async function sendPasswordResetEmail(email: string): Promise<void> {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: passwordResetRedirectTo,
+  });
+  if (error) throw error;
+}
+
+export async function updatePassword(password: string): Promise<void> {
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) throw error;
+}
+
+export type AuthLink =
+  | { kind: 'session'; accessToken: string; refreshToken: string; isPasswordReset: boolean }
+  | { kind: 'error'; message: string };
+
 /**
- * Finishes sign-in when the app is opened from an email confirmation link.
- * Supabase puts the session after the '#' in the URL.
+ * Reads an email link (confirm email or reset password) that opened the app.
+ * Supabase puts the session after the '#' in the URL. Returns null for any
+ * other link.
  */
-export async function completeSignInFromLink(url: string): Promise<{ error?: string }> {
+export function parseAuthLink(url: string): AuthLink | null {
   const fragment = url.split('#')[1];
-  if (!fragment) return {};
+  if (!fragment) return null;
 
   const params = new URLSearchParams(fragment);
   const linkError = params.get('error_description');
-  if (linkError) return { error: linkError };
+  if (linkError) return { kind: 'error', message: linkError };
 
   const accessToken = params.get('access_token');
   const refreshToken = params.get('refresh_token');
-  if (!accessToken || !refreshToken) return {};
+  if (!accessToken || !refreshToken) return null;
 
-  const { error } = await supabase.auth.setSession({
-    access_token: accessToken,
-    refresh_token: refreshToken,
-  });
-  return error ? { error: error.message } : {};
+  return {
+    kind: 'session',
+    accessToken,
+    refreshToken,
+    isPasswordReset: params.get('type') === 'recovery',
+  };
 }
 
 // ---- Sign in with Apple (iPhone only) --------------------------------------
@@ -174,6 +200,8 @@ export function describeAuthError(error: unknown): string {
       return 'An account with this email already exists. Try signing in.';
     case 'weak_password':
       return 'Please choose a stronger password (at least 8 characters).';
+    case 'same_password':
+      return 'Your new password must be different from your old one.';
     case 'over_email_send_rate_limit':
     case 'over_request_rate_limit':
       return 'Too many attempts. Please wait a minute and try again.';

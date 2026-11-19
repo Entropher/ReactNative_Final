@@ -11,9 +11,7 @@ import { TextField } from '@/components/ui/text-field';
 import { AppText } from '@/components/ui/text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
-import { describeAuthError, resendConfirmationEmail, signUpWithEmail } from '@/lib/auth';
-
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { describeAuthError, isValidEmail, resendConfirmationEmail, signUpWithEmail } from '@/lib/auth';
 
 export default function SignUpScreen() {
   const theme = useTheme();
@@ -28,7 +26,7 @@ export default function SignUpScreen() {
   const submit = async () => {
     const found: Record<string, string> = {};
     if (!firstName.trim()) found.firstName = 'First name is required.';
-    if (!EMAIL_PATTERN.test(email.trim())) found.email = 'Please enter a valid email address.';
+    if (!isValidEmail(email)) found.email = 'Please enter a valid email address.';
     if (password.length < 8) found.password = 'Password must be at least 8 characters.';
     setErrors(found);
     if (Object.keys(found).length > 0) return;

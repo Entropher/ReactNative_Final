@@ -79,6 +79,12 @@ export default function SignInScreen() {
           <Button title="Resend confirmation email" variant="ghost" size="sm" icon="mail" onPress={resend} />
         ) : null}
         <Button title="Sign In" onPress={submit} loading={loading} />
+        <Button
+          title="Forgot password?"
+          variant="ghost"
+          size="sm"
+          onPress={() => router.push({ pathname: '/forgot-password', params: { email: email.trim() } })}
+        />
       </Card>
 
       <SocialSignIn />

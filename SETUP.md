@@ -44,7 +44,21 @@ What you'll need:
    - **Site URL**: `https://giftmaster.pro`
    - **Redirect URLs**: add `giftmaster://**` and `exp://**`
 
-   These let the "confirm your email" link open the app.
+   These let the "confirm your email" and "reset your password" links open the app.
+
+6. Set up your own email sender. Supabase's built-in email only reaches the
+   addresses of your Supabase team members, at most 2 emails per hour, so real
+   users would never get their confirmation or password-reset emails. Your
+   website already uses [Resend](https://resend.com). In Resend, verify the
+   `giftmaster.pro` domain and create an API key. Then in Supabase, go to
+   **Authentication > Emails > SMTP Settings** and enter:
+   - Host `smtp.resend.com`, port `465`
+   - Username `resend`
+   - Password: the Resend API key
+   - Sender: an address on your domain, such as `no-reply@giftmaster.pro`
+
+   Until this is done, test sign-up and password reset with the email address
+   you use for your Supabase account.
 
 ## 2. Run the app for the first time (Expo Go)
 
@@ -134,6 +148,7 @@ npx eas-cli@latest submit --platform android
 
 Before submitting, check that:
 
+- [ ] Your own email sender is set up (step 1.6), or new users can't confirm their email.
 - [ ] The store listings link to the privacy policy at https://giftmaster.pro/privacy.
 - [ ] The privacy answers (App Store "App Privacy", Play "Data safety") cover: email
       address and name (for the account), and the gift survey answers the user types

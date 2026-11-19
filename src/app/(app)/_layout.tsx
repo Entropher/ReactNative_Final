@@ -4,10 +4,12 @@ import { Appearance } from 'react-native';
 
 import { usePreferences } from '@/hooks/use-gift-data';
 import { useTheme } from '@/hooks/use-theme';
+import { useAuth } from '@/providers/auth-provider';
 import { SurveyProvider } from '@/providers/survey-provider';
 
 export default function AppLayout() {
   const theme = useTheme();
+  const { isPasswordReset } = useAuth();
   const { data: preferences } = usePreferences();
 
   // Apply the Light / Dark / System choice from Settings to the whole app.
@@ -27,10 +29,19 @@ export default function AppLayout() {
           headerShadowVisible: false,
           headerBackButtonDisplayMode: 'minimal',
         }}>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false, title: 'Home' }} />
-        <Stack.Screen name="questionnaire" options={{ title: 'Find a Gift' }} />
-        <Stack.Screen name="more-details" options={{ title: 'More Details' }} />
-        <Stack.Screen name="results/[id]" options={{ title: 'Gift Ideas' }} />
+        {/* After a "reset password" link, only the new-password screen is available. */}
+        <Stack.Protected guard={!isPasswordReset}>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false, title: 'Home' }} />
+          <Stack.Screen name="questionnaire" options={{ title: 'Find a Gift' }} />
+          <Stack.Screen name="more-details" options={{ title: 'More Details' }} />
+          <Stack.Screen name="results/[id]" options={{ title: 'Gift Ideas' }} />
+        </Stack.Protected>
+        <Stack.Protected guard={isPasswordReset}>
+          <Stack.Screen
+            name="set-new-password"
+            options={{ title: 'New Password', headerBackVisible: false, gestureEnabled: false }}
+          />
+        </Stack.Protected>
       </Stack>
     </SurveyProvider>
   );
