@@ -7,6 +7,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import * as api from '@/lib/api';
 import type { GiftSuggestion, Preferences } from '@/lib/types';
+import { useAuth } from '@/providers/auth-provider';
 
 export const queryKeys = {
   allowance: ['allowance'] as const,
@@ -18,7 +19,9 @@ export const queryKeys = {
 };
 
 export function useAllowance() {
-  return useQuery({ queryKey: queryKeys.allowance, queryFn: api.fetchAllowance });
+  const { session } = useAuth();
+  // Guests on the survey screens have no allowance to load.
+  return useQuery({ queryKey: queryKeys.allowance, queryFn: api.fetchAllowance, enabled: !!session });
 }
 
 export function usePreferences() {

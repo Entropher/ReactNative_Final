@@ -155,6 +155,9 @@ type SurveyContextValue = {
   /** Fresh survey, using the default budget from Settings. */
   startNew: (defaultBudget?: string | null) => void;
   startFromSearch: (search: GiftSearch) => void;
+  /** A guest tapped "Get Gift Ideas"; reopen their answers once they're signed in. */
+  resumeAfterSignIn: boolean;
+  setResumeAfterSignIn: (value: boolean) => void;
 };
 
 const SurveyContext = createContext<SurveyContextValue | null>(null);
@@ -167,12 +170,15 @@ export function useSurvey(): SurveyContextValue {
 
 export function SurveyProvider({ children }: { children: React.ReactNode }) {
   const [survey, setSurvey] = useState<SurveyState>(() => emptySurvey());
+  const [resumeAfterSignIn, setResumeAfterSignIn] = useState(false);
 
   const value: SurveyContextValue = {
     survey,
     update: (changes) => setSurvey((current) => ({ ...current, ...changes })),
     startNew: (defaultBudget) => setSurvey(emptySurvey(defaultBudget)),
     startFromSearch: (search) => setSurvey(surveyFromSearch(search)),
+    resumeAfterSignIn,
+    setResumeAfterSignIn,
   };
 
   return <SurveyContext.Provider value={value}>{children}</SurveyContext.Provider>;

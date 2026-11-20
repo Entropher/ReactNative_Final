@@ -40,13 +40,23 @@
       [
         "@react-native-google-signin/google-signin",
         {
-          "iosUrlScheme": "com.googleusercontent.apps.REPLACE_WITH_YOUR_IOS_CLIENT_ID"
+          "iosUrlScheme": "com.googleusercontent.apps.217022468155-kh1chimnd8i5s8ui8udq64mvbbvfp40l"
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "46ac42f7-875c-4f7c-bb90-7ebdeaf562f5"
+      }
     }
   }
 }

@@ -5,7 +5,6 @@ import { Appearance } from 'react-native';
 import { usePreferences } from '@/hooks/use-gift-data';
 import { useTheme } from '@/hooks/use-theme';
 import { useAuth } from '@/providers/auth-provider';
-import { SurveyProvider } from '@/providers/survey-provider';
 
 export default function AppLayout() {
   const theme = useTheme();
@@ -21,28 +20,24 @@ export default function AppLayout() {
   useEffect(() => () => Appearance.setColorScheme('unspecified'), []);
 
   return (
-    <SurveyProvider>
-      <Stack
-        screenOptions={{
-          headerTintColor: theme.primary,
-          headerTitleStyle: { color: theme.text },
-          headerShadowVisible: false,
-          headerBackButtonDisplayMode: 'minimal',
-        }}>
-        {/* After a "reset password" link, only the new-password screen is available. */}
-        <Stack.Protected guard={!isPasswordReset}>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false, title: 'Home' }} />
-          <Stack.Screen name="questionnaire" options={{ title: 'Find a Gift' }} />
-          <Stack.Screen name="more-details" options={{ title: 'More Details' }} />
-          <Stack.Screen name="results/[id]" options={{ title: 'Gift Ideas' }} />
-        </Stack.Protected>
-        <Stack.Protected guard={isPasswordReset}>
-          <Stack.Screen
-            name="set-new-password"
-            options={{ title: 'New Password', headerBackVisible: false, gestureEnabled: false }}
-          />
-        </Stack.Protected>
-      </Stack>
-    </SurveyProvider>
+    <Stack
+      screenOptions={{
+        headerTintColor: theme.primary,
+        headerTitleStyle: { color: theme.text },
+        headerShadowVisible: false,
+        headerBackButtonDisplayMode: 'minimal',
+      }}>
+      {/* After a "reset password" link, only the new-password screen is available. */}
+      <Stack.Protected guard={!isPasswordReset}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false, title: 'Home' }} />
+        <Stack.Screen name="results/[id]" options={{ title: 'Gift Ideas' }} />
+      </Stack.Protected>
+      <Stack.Protected guard={isPasswordReset}>
+        <Stack.Screen
+          name="set-new-password"
+          options={{ title: 'New Password', headerBackVisible: false, gestureEnabled: false }}
+        />
+      </Stack.Protected>
+    </Stack>
   );
 }

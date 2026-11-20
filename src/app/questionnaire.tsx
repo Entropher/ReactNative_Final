@@ -27,6 +27,7 @@ import {
   OCCASIONS,
   RELATIONSHIPS,
 } from '@/lib/survey-options';
+import { useAuth } from '@/providers/auth-provider';
 import { combinedInterests, occasionLabel, useSurvey, validateStep } from '@/providers/survey-provider';
 
 const STEPS = ['Basic Info', 'Interests', 'Details', 'Final Notes'];
@@ -43,6 +44,7 @@ export default function QuestionnaireScreen() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { survey, update } = useSurvey();
   const { submit, isPending } = useSubmitSurvey();
+  const { session } = useAuth();
 
   if (isPending) {
     return (
@@ -264,6 +266,11 @@ export default function QuestionnaireScreen() {
 
       {step === LAST_STEP ? (
         <View style={styles.finalButtons}>
+          {!session ? (
+            <AppText variant="caption" tone="muted" style={styles.center}>
+              You&apos;ll need a free account to see your gift ideas. Your answers will be kept.
+            </AppText>
+          ) : null}
           <Button title="Get Gift Ideas" icon="sparkles" onPress={submit} />
           <Button
             title="Add More Details"
@@ -319,6 +326,7 @@ const styles = StyleSheet.create({
   swatchSelected: { borderWidth: 3 },
   summary: { borderRadius: Radius.md, padding: Spacing.lg, gap: Spacing.xs },
   finalButtons: { gap: Spacing.md },
+  center: { textAlign: 'center' },
   navButtons: { flexDirection: 'row', gap: Spacing.md },
   flex: { flex: 1 },
 });

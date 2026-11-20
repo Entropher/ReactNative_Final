@@ -1,4 +1,4 @@
-import * as WebBrowser from 'expo-web-browser';
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 
@@ -13,7 +13,6 @@ import { useAllowance, useDeleteAccount, usePreferences, useUpdatePreferences } 
 import { useTheme } from '@/hooks/use-theme';
 import { signOut } from '@/lib/auth';
 import { formatDate } from '@/lib/format';
-import { LEGAL_LINKS } from '@/lib/links';
 import { BUDGET_PRESETS } from '@/lib/survey-options';
 import type { Preferences, ThemePreference } from '@/lib/types';
 import { useAuth } from '@/providers/auth-provider';
@@ -124,18 +123,8 @@ export default function SettingsScreen() {
       </Section>
 
       <Section icon="info" title="About">
-        <Button
-          title="Privacy Policy"
-          variant="outline"
-          size="sm"
-          onPress={() => WebBrowser.openBrowserAsync(LEGAL_LINKS.privacy)}
-        />
-        <Button
-          title="Terms of Service"
-          variant="outline"
-          size="sm"
-          onPress={() => WebBrowser.openBrowserAsync(LEGAL_LINKS.terms)}
-        />
+        <Button title="Privacy Policy" variant="outline" size="sm" onPress={() => router.push('/privacy')} />
+        <Button title="Terms of Service" variant="outline" size="sm" onPress={() => router.push('/terms')} />
       </Section>
 
       <Button title="Sign Out" icon="logout" variant="outline" loading={signingOut} onPress={handleSignOut} />

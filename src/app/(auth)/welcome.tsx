@@ -1,5 +1,4 @@
 import { router } from 'expo-router';
-import * as WebBrowser from 'expo-web-browser';
 import { StyleSheet, View } from 'react-native';
 
 import { BrandHero } from '@/components/brand-hero';
@@ -10,7 +9,7 @@ import { Icon, type IconName } from '@/components/ui/icon';
 import { AppText } from '@/components/ui/text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
-import { LEGAL_LINKS } from '@/lib/links';
+import { useSurvey } from '@/providers/survey-provider';
 
 const STEPS: { icon: IconName; title: string; text: string; color: 'primary' | 'secondary' | 'accent' }[] = [
   {
@@ -35,6 +34,14 @@ const STEPS: { icon: IconName; title: string; text: string; color: 'primary' | '
 
 export default function WelcomeScreen() {
   const theme = useTheme();
+  const survey = useSurvey();
+
+  // Guests can go through the whole survey; signing in is asked for at the end.
+  const tryGiftSearch = () => {
+    survey.startNew();
+    router.push('/questionnaire');
+  };
+
   return (
     <Screen withTopInset>
       <BrandHero style={styles.hero}>
@@ -50,7 +57,8 @@ export default function WelcomeScreen() {
 
       <View style={styles.buttons}>
         <Button title="Get Started" icon="arrowRight" iconPosition="right" onPress={() => router.push('/sign-up')} />
-        <Button title="I already have an account" variant="outline" onPress={() => router.push('/sign-in')} />
+        <Button title="Try a Gift Search" icon="sparkles" variant="outline" onPress={tryGiftSearch} />
+        <Button title="I already have an account" variant="ghost" onPress={() => router.push('/sign-in')} />
       </View>
 
       <AppText variant="heading">How It Works</AppText>
@@ -69,13 +77,8 @@ export default function WelcomeScreen() {
       ))}
 
       <View style={styles.legal}>
-        <Button title="Terms" variant="ghost" size="sm" onPress={() => WebBrowser.openBrowserAsync(LEGAL_LINKS.terms)} />
-        <Button
-          title="Privacy Policy"
-          variant="ghost"
-          size="sm"
-          onPress={() => WebBrowser.openBrowserAsync(LEGAL_LINKS.privacy)}
-        />
+        <Button title="Terms" variant="ghost" size="sm" onPress={() => router.push('/terms')} />
+        <Button title="Privacy Policy" variant="ghost" size="sm" onPress={() => router.push('/privacy')} />
       </View>
     </Screen>
   );
