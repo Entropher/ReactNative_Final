@@ -36,10 +36,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isPasswordReset, setIsPasswordReset] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setIsLoading(false);
-    });
+    supabase.auth
+      .getSession()
+      .then(({ data }) => setSession(data.session))
+      // If the saved sign-in can't be read, start signed out instead of
+      // leaving the splash screen up forever.
+      .catch((error) => console.error('Could not restore sign-in:', error))
+      .finally(() => setIsLoading(false));
 
     const { data } = supabase.auth.onAuthStateChange((event, newSession) => {
       setSession(newSession);

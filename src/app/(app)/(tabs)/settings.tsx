@@ -26,7 +26,6 @@ const THEMES: { value: ThemePreference; label: string }[] = [
 const SIGN_IN_METHODS: Record<string, string> = {
   email: 'Email and password',
   apple: 'Sign in with Apple',
-  google: 'Google',
 };
 
 export default function SettingsScreen() {

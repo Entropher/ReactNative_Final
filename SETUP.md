@@ -11,7 +11,6 @@ What you'll need:
 | [Anthropic Console](https://console.anthropic.com) | The Claude API key that writes the gift ideas | Pay per use (about $0.002 per search with Claude Haiku 5.5) |
 | [Expo](https://expo.dev) | Building the app in the cloud (no Mac needed) | Free tier is enough to start |
 | [Apple Developer](https://developer.apple.com/programs/) | Sign in with Apple, iPhone builds, App Store | $99/year |
-| [Google Cloud](https://console.cloud.google.com) | Sign in with Google | Free |
 | [Google Play Console](https://play.google.com/console) | Publishing on Android | $25 once |
 
 ---
@@ -64,7 +63,7 @@ What you'll need:
 
 1. Copy `.env.example` to `.env.local`. Then fill in `EXPO_PUBLIC_SUPABASE_URL`
    and `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY` from **Project Settings > API**
-   in Supabase. Leave the Google values empty for now.
+   in Supabase.
 2. Install the **Expo Go** app on your phone, then run:
 
    ```powershell
@@ -74,14 +73,10 @@ What you'll need:
 3. Scan the QR code. You can now sign up with email, confirm the email *on the
    phone*, run a gift search, save gifts, and so on.
 
-Expo Go can't run Google sign-in (it needs native code that Expo Go doesn't
-include), so that button is hidden there. The next step fixes that.
-
 ## 3. Development build (your own test version of the app)
 
 A development build is GiftMaster's own version of Expo Go. It includes every
-native library, so Google and Apple sign-in work the same way they will in the
-store.
+native library, so Apple sign-in works the same way it will in the store.
 
 1. Connect the project to Expo:
 
@@ -107,8 +102,6 @@ store.
 
 ## 4. Sign in with Apple
 
-Apple requires this on iPhone whenever Google sign-in is offered.
-
 1. The first iOS build with EAS creates the App ID `pro.giftmaster.app` and
    turns on the Sign in with Apple capability for you (because `app.json` has
    `"usesAppleSignIn": true`).
@@ -116,29 +109,7 @@ Apple requires this on iPhone whenever Google sign-in is offered.
    under **Client IDs** add: `pro.giftmaster.app`. To also test in Expo Go,
    add `host.exp.Exponent`.
 
-## 5. Sign in with Google
-
-1. In [Google Cloud console](https://console.cloud.google.com), open **Google
-   Auth Platform**, set up the consent screen, then create three OAuth
-   clients under **Clients**:
-   - **Web application**. Its client ID goes in `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`.
-   - **iOS**, with bundle ID `pro.giftmaster.app`. Its client ID goes in
-     `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID`.
-   - **Android**, with package name `pro.giftmaster.app` and the SHA-1
-     fingerprint shown by `npx eas-cli@latest credentials` (Android > your
-     build profile). After you publish, also add the SHA-1 from Play Console
-     (**Setup > App signing**).
-2. In `app.json`, replace `REPLACE_WITH_YOUR_IOS_CLIENT_ID` in `iosUrlScheme`.
-   Use the iOS client ID *reversed*: client ID `1234-abc.apps.googleusercontent.com`
-   becomes `com.googleusercontent.apps.1234-abc`.
-3. In Supabase, go to **Authentication > Providers > Google**, enable it, and
-   paste all three client IDs into **Client IDs**, separated by commas. Turn on
-   **Skip nonce check**: the iOS Google library adds a nonce that Supabase
-   can't verify.
-4. Add the two `EXPO_PUBLIC_GOOGLE_...` values to `.env.local` *and* to the
-   Expo environment variables (step 3.2), then make a new development build.
-
-## 6. Publish
+## 5. Publish
 
 ```powershell
 npx eas-cli@latest build --profile production --platform all

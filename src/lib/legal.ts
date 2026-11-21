@@ -101,7 +101,7 @@ export const PRIVACY: LegalDoc = {
     {
       heading: '2. Information We Collect',
       bullets: [
-        'Account information: your email address, an optional display name, and a hashed password (never stored in plain text). If you sign in with Google, we receive your name, email, and profile picture from Google.',
+        'Account information: your email address, an optional display name, and a hashed password (never stored in plain text).',
         'Gift search inputs: the recipient details, interests, budget, and any additional context you submit in order to generate suggestions.',
         'Generated content: the AI-generated gift suggestions associated with your account, and the items you mark as saved.',
         'Transaction information: credit purchases, balances, and a reference to the payment processed by Paddle. We do not store your full payment card number; that information is handled directly by Paddle.',
@@ -127,7 +127,6 @@ export const PRIVACY: LegalDoc = {
       bullets: [
         'Anthropic — receives your gift search inputs to generate suggestions.',
         'Paddle — acts as the merchant of record for credit purchases and processes your payment information.',
-        'Google — if you choose to sign in with Google.',
         'Hosting and database providers — to store and serve your account data.',
       ],
       closing:

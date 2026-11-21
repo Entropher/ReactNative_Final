@@ -1,5 +1,4 @@
 import * as AppleAuthentication from 'expo-apple-authentication';
-import Constants, { ExecutionEnvironment } from 'expo-constants';
 import * as Linking from 'expo-linking';
 import { Platform } from 'react-native';
 
@@ -137,57 +136,14 @@ export async function signInWithApple(): Promise<typeof CANCELLED | void> {
   }
 }
 
-// ---- Sign in with Google ---------------------------------------------------
-
-const googleWebClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
-const googleIosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
-
-/**
- * Google sign-in needs native code that the Expo Go app doesn't include, so
- * the button is hidden there. It works in development and store builds.
- */
-export const isGoogleSignInAvailable =
-  Constants.executionEnvironment !== ExecutionEnvironment.StoreClient && !!googleWebClientId;
-
-// Loaded on demand so that simply opening the app in Expo Go doesn't crash.
-async function loadGoogleSignIn() {
-  const google = await import('@react-native-google-signin/google-signin');
-  google.GoogleSignin.configure({ webClientId: googleWebClientId, iosClientId: googleIosClientId });
-  return google;
-}
-
-export async function signInWithGoogle(): Promise<typeof CANCELLED | void> {
-  const { GoogleSignin, isSuccessResponse, isErrorWithCode, statusCodes } = await loadGoogleSignIn();
-
-  let idToken: string | null;
-  try {
-    await GoogleSignin.hasPlayServices();
-    const response = await GoogleSignin.signIn();
-    if (!isSuccessResponse(response)) return CANCELLED;
-    idToken = response.data.idToken;
-  } catch (error) {
-    if (isErrorWithCode(error) && error.code === statusCodes.SIGN_IN_CANCELLED) return CANCELLED;
-    throw error;
-  }
-  if (!idToken) throw new Error('Google did not return a sign-in token.');
-
-  const { error } = await supabase.auth.signInWithIdToken({ provider: 'google', token: idToken });
-  if (error) throw error;
-}
-
 // ---- Sign out --------------------------------------------------------------
 
 /** Signs out on this phone only (other devices stay signed in). */
 export async function signOut(): Promise<void> {
-  if (isGoogleSignInAvailable) {
-    // So the Google account picker shows again next time.
-    const { GoogleSignin } = await loadGoogleSignIn();
-    await GoogleSignin.signOut().catch(() => undefined);
-  }
   await supabase.auth.signOut({ scope: 'local' });
 }
 
-/** A friendly message for sign-in errors from Supabase, Apple or Google. */
+/** A friendly message for sign-in errors from Supabase or Apple. */
 export function describeAuthError(error: unknown): string {
   const code = (error as { code?: string })?.code;
   switch (code) {

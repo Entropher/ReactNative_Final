@@ -3,7 +3,7 @@ import { Alert } from 'react-native';
 
 import type { Allowance, GiftSearch } from '@/lib/types';
 
-/** First name from sign-up, Apple or Google; falls back to the email. */
+/** First name from sign-up or Apple; falls back to the email. */
 export function firstName(user: User | undefined): string {
   const meta = user?.user_metadata ?? {};
   const name: string =

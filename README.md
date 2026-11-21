@@ -12,7 +12,7 @@ to Amazon, Etsy or Uncommon Goods.
 - 10 AI gift ideas per search, with price range, category, shop link and product photo
 - "More Like This" for 5 similar ideas, saving favorites, sharing
 - Search history with "Use again"
-- Email/password (with email confirmation and "Forgot password"), Sign in with Apple, and Google sign-in
+- Email/password (with email confirmation and "Forgot password") and Sign in with Apple
 - 3 free searches per month per account
 - Light/dark theme and a default budget in Settings; in-app account deletion
 
